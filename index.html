@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pepper's Labubu Math Practice</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Fredoka One', cursive;
+      text-align: center;
+      padding-top: 40px;
+      background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('https://i.imgur.com/34dXxS7.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      color: #333;
+    }
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      font-size: 84px;
+      background: rgba(255, 255, 255, 0.8);
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 12px;
+      color: #ff69b4;
+      line-height: 1.2;
+      margin: 0;
+    }
+    #spinButton {
+      font-size: 26px;
+      padding: 12px 24px;
+      margin-top: 20px;
+      margin-bottom: 30px;
+      cursor: pointer;
+      background: #ffe066;
+      border: 2px solid #ff8c00;
+      border-radius: 10px;
+      color: #d147a3;
+      font-family: 'Fredoka One', cursive;
+    }
+    .box {
+      display: inline-block;
+      width: 160px;
+      height: 160px;
+      border: 2px solid black;
+      font-size: 80px;
+      vertical-align: middle;
+      line-height: 160px;
+      margin: 0 10px;
+      background: rgba(255, 255, 255, 0.8);
+      color: #ff4500;
+    }
+    .circle {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 200px;
+      height: 200px;
+      border: 4px dashed #8a2be2;
+      border-radius: 50%;
+      background: #fff5ff;
+      margin: 0 10px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    #message {
+      margin-top: 40px;
+      font-weight: bold;
+      font-size: 64px;
+      background: rgba(255, 255, 255, 0.7);
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 10px;
+      color: #2e8b57;
+    }
+    input.answerInput {
+      font-size: 48px;
+      width: 90%;
+      height: 90%;
+      text-align: center;
+      background: white;
+      border: none;
+      border-radius: 50%;
+      font-family: 'Fredoka One', cursive;
+      color: #8a2be2;
+      padding-top: 10px;
+      box-sizing: border-box;
+    }
+    @media (max-width: 600px) {
+      .box, .circle {
+        width: 140px;
+        height: 140px;
+      }
+      .circle input.answerInput {
+        font-size: 36px;
+      }
+      span {
+        font-size: 60px !important;
+      }
+      h1 {
+        font-size: 48px;
+      }
+      #spinButton {
+        font-size: 20px;
+        padding: 10px 20px;
+      }
+      #message {
+        font-size: 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Pepper's Labubu<br>Math Practice</h1>
+    <button id="spinButton">😄 SPIN THE NUMBERS!</button>
+  </div>
+  <br><br>
+  <div style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap;">
+    <div class="box" id="num1">?</div>
+    <span style="font-size: 100px; color: #ff69b4;">×</span>
+    <div class="box" id="num2">?</div>
+    <span style="font-size: 100px; color: #ff69b4;">=</span>
+    <div class="circle">
+      <input type="number" class="answerInput" id="userAnswer" disabled />
+    </div>
+  </div>
+  <div id="message"></div>
+
+  <script>
+    var correctAnswer = 0;
+    var difficulty = typeof difficulty === 'undefined' ? 5 : difficulty;
+    if (typeof num1Box === 'undefined') {
+      var num1Box = document.getElementById('num1');
+    }
+    if (typeof num2Box === 'undefined') {
+      var num2Box = document.getElementById('num2');
+    }
+    if (typeof userAnswer === 'undefined') {
+      var userAnswer = document.getElementById('userAnswer');
+    }
+    if (typeof message === 'undefined') {
+      var message = document.getElementById('message');
+    }
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function getRandomColor() {
+      const colors = ['#FFD700', '#ADFF2F', '#FFB6C1', '#87CEFA', '#FFA07A', '#E0FFFF', '#DDA0DD'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+    function spinNumbers() {
+      const n1 = getRandomInt(0, difficulty);
+      const n2 = getRandomInt(0, difficulty);
+      num1Box.textContent = n1;
+      num2Box.textContent = n2;
+      correctAnswer = n1 * n2;
+      userAnswer.value = '';
+      userAnswer.disabled = false;
+      userAnswer.focus();
+      message.textContent = "What's the answer, Pepper?";
+      num1Box.style.backgroundColor = getRandomColor();
+      num2Box.style.backgroundColor = getRandomColor();
+      userAnswer.parentElement.style.backgroundColor = getRandomColor();
+    }
+    function checkAnswer() {
+      const userVal = parseInt(userAnswer.value);
+      if (!isNaN(userVal)) {
+        if (userVal === correctAnswer) {
+          const correctMessages = ['🎉 Correct, great job!', '👏 Awesome work!', '🌟 You nailed it!', '✅ That’s right!', '🏆 Perfect answer!'];
+          message.textContent = correctMessages[Math.floor(Math.random() * correctMessages.length)];
+          if (difficulty < 15) difficulty++;
+          setTimeout(spinNumbers, 1500);
+        } else {
+          const wrongMessages = ['💀 Oops! Try again!', '❌ Not quite!', '😅 Try once more!', '🙈 Wrong answer!', '🫣 Keep trying!'];
+          message.textContent = wrongMessages[Math.floor(Math.random() * wrongMessages.length)];
+        }
+      }
+    }
+    document.getElementById('spinButton').addEventListener('click', spinNumbers);
+    userAnswer.addEventListener('change', checkAnswer);
+  </script>
+</body>
+</html>
