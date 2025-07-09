@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,17 +13,14 @@
       background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('https://i.imgur.com/34dXxS7.jpeg') no-repeat center center fixed;
       background-size: cover;
       color: #333;
-      margin: 0;
     }
-
     .header {
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-
     h1 {
-      font-size: 7vw;
+      font-size: 84px;
       background: rgba(255, 255, 255, 0.8);
       display: inline-block;
       padding: 10px 20px;
@@ -33,12 +29,11 @@
       line-height: 1.2;
       margin: 0;
     }
-
     #spinButton {
-      font-size: 5vw;
-      padding: 2vw 4vw;
-      margin-top: 2vh;
-      margin-bottom: 3vh;
+      font-size: 26px;
+      padding: 12px 24px;
+      margin-top: 20px;
+      margin-bottom: 30px;
       cursor: pointer;
       background: #ffe066;
       border: 2px solid #ff8c00;
@@ -46,34 +41,45 @@
       color: #d147a3;
       font-family: 'Fredoka One', cursive;
     }
-
-    .box, .circle {
-      display: inline-block;
-      width: 24vw;
-      height: 24vw;
-      font-size: 10vw;
-      line-height: 24vw;
-      margin: 1vw;
-      vertical-align: middle;
-    }
-
     .box {
+      display: inline-block;
+      width: 160px;
+      height: 160px;
       border: 2px solid black;
+      font-size: 80px;
+      vertical-align: middle;
+      line-height: 160px;
+      margin: 0 10px;
       background: rgba(255, 255, 255, 0.8);
       color: #ff4500;
     }
-
     .circle {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 200px;
+      height: 200px;
       border: 4px dashed #8a2be2;
       border-radius: 50%;
       background: #fff5ff;
-      position: relative;
+      margin: 0 10px;
+      box-sizing: border-box;
+      overflow: hidden;
     }
-
+    #message {
+      margin-top: 40px;
+      font-weight: bold;
+      font-size: 64px;
+      background: rgba(255, 255, 255, 0.7);
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 10px;
+      color: #2e8b57;
+    }
     input.answerInput {
-      font-size: 7vw;
-      width: 100%;
-      height: 100%;
+      font-size: 48px;
+      width: 90%;
+      height: 90%;
       text-align: center;
       background: white;
       border: none;
@@ -83,36 +89,26 @@
       padding-top: 10px;
       box-sizing: border-box;
     }
-
-    #message {
-      margin-top: 40px;
-      font-weight: bold;
-      font-size: 6vw;
-      background: rgba(255, 255, 255, 0.7);
-      display: inline-block;
-      padding: 10px 16px;
-      border-radius: 10px;
-      color: #2e8b57;
-    }
-
-    @media (max-width: 768px) {
+    @media (max-width: 600px) {
       .box, .circle {
-        width: 28vw;
-        height: 28vw;
-        font-size: 10vw;
-        line-height: 28vw;
+        width: 140px;
+        height: 140px;
       }
-
-      input.answerInput {
-        font-size: 8vw;
+      .circle input.answerInput {
+        font-size: 36px;
       }
-
-      #message {
-        font-size: 6vw;
+      span {
+        font-size: 60px !important;
       }
-
+      h1 {
+        font-size: 48px;
+      }
       #spinButton {
-        font-size: 6vw;
+        font-size: 20px;
+        padding: 10px 20px;
+      }
+      #message {
+        font-size: 36px;
       }
     }
   </style>
@@ -122,35 +118,41 @@
     <h1>Pepper's Labubu<br>Math Practice</h1>
     <button id="spinButton">😄 SPIN THE NUMBERS!</button>
   </div>
-
-  <div style="display: flex; justify-content: center; align-items: center; gap: 2vw; flex-wrap: wrap;">
+  <br><br>
+  <div style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap;">
     <div class="box" id="num1">?</div>
-    <span style="font-size: 10vw; color: #ff69b4;">×</span>
+    <span style="font-size: 100px; color: #ff69b4;">×</span>
     <div class="box" id="num2">?</div>
-    <span style="font-size: 10vw; color: #ff69b4;">=</span>
-    <div class="circle"><input type="number" class="answerInput" id="userAnswer" disabled /></div>
+    <span style="font-size: 100px; color: #ff69b4;">=</span>
+    <div class="circle">
+      <input type="number" class="answerInput" id="userAnswer" disabled />
+    </div>
   </div>
-
   <div id="message"></div>
 
   <script>
-    let correctAnswer = 0;
-    let difficulty = 5;
-
-    const num1Box = document.getElementById('num1');
-    const num2Box = document.getElementById('num2');
-    const userAnswer = document.getElementById('userAnswer');
-    const message = document.getElementById('message');
+    var correctAnswer = 0;
+    var difficulty = typeof difficulty === 'undefined' ? 5 : difficulty;
+    if (typeof num1Box === 'undefined') {
+      var num1Box = document.getElementById('num1');
+    }
+    if (typeof num2Box === 'undefined') {
+      var num2Box = document.getElementById('num2');
+    }
+    if (typeof userAnswer === 'undefined') {
+      var userAnswer = document.getElementById('userAnswer');
+    }
+    if (typeof message === 'undefined') {
+      var message = document.getElementById('message');
+    }
 
     function getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-
     function getRandomColor() {
       const colors = ['#FFD700', '#ADFF2F', '#FFB6C1', '#87CEFA', '#FFA07A', '#E0FFFF', '#DDA0DD'];
       return colors[Math.floor(Math.random() * colors.length)];
     }
-
     function spinNumbers() {
       const n1 = getRandomInt(0, difficulty);
       const n2 = getRandomInt(0, difficulty);
@@ -161,12 +163,10 @@
       userAnswer.disabled = false;
       userAnswer.focus();
       message.textContent = "What's the answer, Pepper?";
-
       num1Box.style.backgroundColor = getRandomColor();
       num2Box.style.backgroundColor = getRandomColor();
       userAnswer.parentElement.style.backgroundColor = getRandomColor();
     }
-
     function checkAnswer() {
       const userVal = parseInt(userAnswer.value);
       if (!isNaN(userVal)) {
@@ -181,7 +181,6 @@
         }
       }
     }
-
     document.getElementById('spinButton').addEventListener('click', spinNumbers);
     userAnswer.addEventListener('change', checkAnswer);
   </script>
