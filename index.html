@@ -14,11 +14,6 @@
       background-size: cover;
       color: #333;
     }
-    .header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
     h1 {
       font-size: 84px;
       background: rgba(255, 255, 255, 0.8);
@@ -27,19 +22,7 @@
       border-radius: 12px;
       color: #ff69b4;
       line-height: 1.2;
-      margin: 0;
-    }
-    #spinButton {
-      font-size: 26px;
-      padding: 12px 24px;
-      margin-top: 20px;
-      margin-bottom: 30px;
-      cursor: pointer;
-      background: #ffe066;
-      border: 2px solid #ff8c00;
-      border-radius: 10px;
-      color: #d147a3;
-      font-family: 'Fredoka One', cursive;
+      margin: 0 0 30px;
     }
     .box {
       display: inline-block;
@@ -54,16 +37,15 @@
       color: #ff4500;
     }
     .circle {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 200px;
-      height: 200px;
+      display: inline-block;
+      width: 180px;
+      height: 180px;
       border: 4px dashed #8a2be2;
       border-radius: 50%;
       background: #fff5ff;
+      vertical-align: middle;
+      line-height: 180px;
       margin: 0 10px;
-      box-sizing: border-box;
       overflow: hidden;
     }
     #message {
@@ -78,8 +60,8 @@
     }
     input.answerInput {
       font-size: 48px;
-      width: 90%;
-      height: 90%;
+      width: 100%;
+      height: 100%;
       text-align: center;
       background: white;
       border: none;
@@ -91,33 +73,22 @@
     }
     @media (max-width: 600px) {
       .box, .circle {
-        width: 140px;
-        height: 140px;
+        width: 120px;
+        height: 120px;
+        font-size: 60px;
+        line-height: 120px;
       }
-      .circle input.answerInput {
+      input.answerInput {
         font-size: 36px;
-      }
-      span {
-        font-size: 60px !important;
-      }
-      h1 {
-        font-size: 48px;
-      }
-      #spinButton {
-        font-size: 20px;
-        padding: 10px 20px;
       }
       #message {
-        font-size: 36px;
+        font-size: 48px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>Pepper's Labubu<br>Math Practice</h1>
-    <button id="spinButton">😄 SPIN THE NUMBERS!</button>
-  </div>
+  <h1>Pepper's Labubu<br>Math Practice</h1>
   <br><br>
   <div style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap;">
     <div class="box" id="num1">?</div>
@@ -128,32 +99,32 @@
       <input type="number" class="answerInput" id="userAnswer" disabled />
     </div>
   </div>
+
   <div id="message"></div>
 
   <script>
     var correctAnswer = 0;
-    var difficulty = typeof difficulty === 'undefined' ? 5 : difficulty;
-    if (typeof num1Box === 'undefined') {
-      var num1Box = document.getElementById('num1');
-    }
-    if (typeof num2Box === 'undefined') {
-      var num2Box = document.getElementById('num2');
-    }
-    if (typeof userAnswer === 'undefined') {
-      var userAnswer = document.getElementById('userAnswer');
-    }
-    if (typeof message === 'undefined') {
-      var message = document.getElementById('message');
-    }
+    var difficulty = 5;
+    var streak = 0;
+    var maxDifficulty = 50;
+    var minDifficulty = 5;
+
+    var num1Box = document.getElementById('num1');
+    var num2Box = document.getElementById('num2');
+    var userAnswer = document.getElementById('userAnswer');
+    var message = document.getElementById('message');
 
     function getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
+
     function getRandomColor() {
       const colors = ['#FFD700', '#ADFF2F', '#FFB6C1', '#87CEFA', '#FFA07A', '#E0FFFF', '#DDA0DD'];
       return colors[Math.floor(Math.random() * colors.length)];
     }
+
     function spinNumbers() {
+      // Increase difficulty for correct streak, lower if too many mistakes
       const n1 = getRandomInt(0, difficulty);
       const n2 = getRandomInt(0, difficulty);
       num1Box.textContent = n1;
@@ -163,26 +134,42 @@
       userAnswer.disabled = false;
       userAnswer.focus();
       message.textContent = "What's the answer, Pepper?";
-      num1Box.style.backgroundColor = getRandomColor();
-      num2Box.style.backgroundColor = getRandomColor();
-      userAnswer.parentElement.style.backgroundColor = getRandomColor();
+
+      const color1 = getRandomColor();
+      const color2 = getRandomColor();
+      const color3 = getRandomColor();
+      num1Box.style.backgroundColor = color1;
+      num2Box.style.backgroundColor = color2;
+      userAnswer.parentElement.style.backgroundColor = color3;
     }
+
     function checkAnswer() {
       const userVal = parseInt(userAnswer.value);
       if (!isNaN(userVal)) {
         if (userVal === correctAnswer) {
+          streak++;
+          // Increase difficulty more quickly as streak rises
+          if (difficulty < maxDifficulty && streak % 2 === 0) {
+            difficulty += 2;
+          } else if (difficulty < maxDifficulty && streak % 1 === 0) {
+            difficulty++;
+          }
           const correctMessages = ['🎉 Correct, great job!', '👏 Awesome work!', '🌟 You nailed it!', '✅ That’s right!', '🏆 Perfect answer!'];
-          message.textContent = correctMessages[Math.floor(Math.random() * correctMessages.length)];
-          if (difficulty < 15) difficulty++;
+          const msg = correctMessages[Math.floor(Math.random() * correctMessages.length)];
+          message.textContent = msg;
           setTimeout(spinNumbers, 1500);
         } else {
+          streak = 0;
+          if (difficulty > minDifficulty) difficulty--;
           const wrongMessages = ['💀 Oops! Try again!', '❌ Not quite!', '😅 Try once more!', '🙈 Wrong answer!', '🫣 Keep trying!'];
-          message.textContent = wrongMessages[Math.floor(Math.random() * wrongMessages.length)];
+          const msg = wrongMessages[Math.floor(Math.random() * wrongMessages.length)];
+          message.textContent = msg;
         }
       }
     }
-    document.getElementById('spinButton').addEventListener('click', spinNumbers);
+
     userAnswer.addEventListener('change', checkAnswer);
+    document.addEventListener('DOMContentLoaded', spinNumbers);
   </script>
 </body>
 </html>
